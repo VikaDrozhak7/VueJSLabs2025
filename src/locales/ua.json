@@ -1,0 +1,72 @@
+{
+  "appTitle": "Магазин",
+  "appTitleUpper": "@.upper:appTitle",
+
+  "menu": {
+    "profile": "Профіль",
+    "cart": "Кошик",
+    "products": "Товари"
+  },
+
+  "profile": {
+    "title": "Профіль",
+    "name": "Ім'я",
+    "email": "Email",
+    "dateOfBirth": "Дата народження",
+    "address": "Адреса",
+    "phones": "Телефони"
+  },
+
+  "cart": {
+    "title": "Кошик",
+    "empty": "Кошик порожній",
+    "totalCount": "Кількість товарів",
+    "totalPrice": "Загальна сума",
+    "clear": "Очистити кошик"
+  },
+
+  "products": {
+    "title": "Список товарів",
+    "addToCart": "Додати в кошик"
+  },
+
+  "buttons": {
+    "save": "Зберегти",
+    "reset": "Скинути",
+    "addPhone": "Додати телефон",
+    "remove": "Видалити"
+  },
+
+  "errors": {
+    "required": "Поле є обов'язковим",
+    "email": "Некоректний email",
+    "wrongPhone": "Некоректний номер телефону",
+    "minOnePhone": "Потрібен хоча б один телефон",
+    "emailTaken": "Цей email вже існує"
+  },
+
+  "productsData": {
+    "macbook_title": "Apple MacBook Air M2",
+    "macbook_desc": "Легкий ноутбук із потужним процесором M2 для роботи та навчання.",
+    "macbook_category": "Ноутбуки",
+
+    "iphone_title": "iPhone 15 Pro",
+    "iphone_desc": "Флагманський смартфон з чудовою камерою та дисплеєм.",
+    "iphone_category": "Смартфони",
+
+    "sony_title": "Sony WH-1000XM5",
+    "sony_desc": "Навушники з шумопоглинанням для музики та концентрації.",
+    "sony_category": "Навушники",
+
+    "samsung_title": "Samsung Odyssey G7",
+    "samsung_desc": "Ігровий монітор із вигнутим екраном та частотою оновлення 240 Гц.",
+    "samsung_category": "Монітори"
+  },
+
+  "languages": {
+    "ua": "Українська",
+    "en": "Англійська"
+  }
+}
+
+
