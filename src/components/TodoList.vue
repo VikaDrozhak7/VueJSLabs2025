@@ -1,5 +1,4 @@
 <template>
-  <!-- Форма длч додавання  -->
   <section class="card">
     <h2>Додати задачу</h2>
     <form @submit.prevent="addTask">
@@ -18,15 +17,11 @@
     </form>
   </section>
 
-  <!-- Фільтри -->
   <section class="card">
     <h2>Фільтри</h2>
     <div class="grid">
       <input v-model.trim="filters.title" placeholder="Title contains..." />
-      <input
-        v-model.trim="filters.description"
-        placeholder="Description contains..."
-      />
+      <input v-model.trim="filters.description" placeholder="Description contains..." />
       <select v-model="filters.status" aria-label="Статус">
         <option value="">Будь-який статус</option>
         <option value="active">Активні</option>
@@ -46,20 +41,12 @@
     </div>
   </section>
 
-  <!-- Лічильники -->
   <section class="stats">
-    <span
-      >Усього: <strong>{{ total }}</strong></span
-    >
-    <span
-      >Активні: <strong>{{ activeCount }}</strong></span
-    >
-    <span
-      >Виконані: <strong>{{ completedCount }}</strong></span
-    >
+    <span>Усього: <strong>{{ total }}</strong></span>
+    <span>Активні: <strong>{{ activeCount }}</strong></span>
+    <span>Виконані: <strong>{{ completedCount }}</strong></span>
   </section>
 
-  <!-- Таблиця задач -->
   <section class="card">
     <div class="row">
       <h2>Задачі</h2>
@@ -75,85 +62,71 @@
 
     <table class="table">
       <thead>
-        <tr>
-          <th>Статус</th>
-          <th>Назва</th>
-          <th>Опис</th>
-          <th>Пріоритет</th>
-          <th>Створено</th>
-          <th>Дії</th>
-        </tr>
+      <tr>
+        <th>Статус</th>
+        <th>Назва</th>
+        <th>Опис</th>
+        <th>Пріоритет</th>
+        <th>Створено</th>
+        <th>Дії</th>
+      </tr>
       </thead>
       <tbody>
-        <tr v-for="t in paginatedTasks" :key="t.id">
-          <td>
-            <input
+      <tr v-for="t in paginatedTasks" :key="t.id">
+        <td>
+          <input
               type="checkbox"
               :checked="t.status === 'done'"
               @change="toggleStatus(t.id)"
               aria-label="Позначити виконаною"
-            />
-          </td>
+          />
+        </td>
 
-          <!-- Режим перегляду / редагування -->
+        <template v-if="editId !== t.id">
+          <td :class="{ done: t.status === 'done' }">{{ t.title }}</td>
+          <td class="muted">{{ t.description }}</td>
+        </template>
+        <template v-else>
+          <td><input v-model.trim="editDraft.title" /></td>
+          <td><input v-model.trim="editDraft.description" /></td>
+        </template>
+
+        <td>
           <template v-if="editId !== t.id">
-            <td :class="{ done: t.status === 'done' }">{{ t.title }}</td>
-            <td class="muted">{{ t.description }}</td>
+            <span class="tag" :data-p="t.priority">{{ t.priority }}</span>
           </template>
           <template v-else>
-            <td><input v-model.trim="editDraft.title" /></td>
-            <td><input v-model.trim="editDraft.description" /></td>
+            <select v-model="editDraft.priority">
+              <option value="low">Низький</option>
+              <option value="medium">Середній</option>
+              <option value="high">Високий</option>
+            </select>
           </template>
+        </td>
 
-          <td>
-            <template v-if="editId !== t.id">
-              <span class="tag" :data-p="t.priority">{{ t.priority }}</span>
-            </template>
-            <template v-else>
-              <select v-model="editDraft.priority">
-                <option value="low">Низький</option>
-                <option value="medium">Середній</option>
-                <option value="high">Високий</option>
-              </select>
-            </template>
-          </td>
+        <td>{{ formatDate(t.createdAt) }}</td>
+        <td class="actions">
+          <template v-if="editId !== t.id">
+            <button type="button" @click="startEdit(t)">Редагувати</button>
+            <button type="button" class="danger" @click="removeTask(t.id)">Видалити</button>
+          </template>
+          <template v-else>
+            <button type="button" @click="saveEdit(t.id)" :disabled="!editDraft.title.trim()">Зберегти</button>
+            <button type="button" class="ghost" @click="cancelEdit">Скасувати</button>
+          </template>
+        </td>
+      </tr>
 
-          <td>{{ formatDate(t.createdAt) }}</td>
-          <td class="actions">
-            <template v-if="editId !== t.id">
-              <button type="button" @click="startEdit(t)">Редагувати</button>
-              <button type="button" class="danger" @click="removeTask(t.id)">
-                Видалити
-              </button>
-            </template>
-            <template v-else>
-              <button
-                type="button"
-                @click="saveEdit(t.id)"
-                :disabled="!editDraft.title.trim()"
-              >
-                Зберегти
-              </button>
-              <button type="button" class="ghost" @click="cancelEdit">
-                Скасувати
-              </button>
-            </template>
-          </td>
-        </tr>
-
-        <tr v-if="paginatedTasks.length === 0">
-          <td colspan="6" class="muted center">Нічого не знайдено</td>
-        </tr>
+      <tr v-if="paginatedTasks.length === 0">
+        <td colspan="6" class="muted center">Нічого не знайдено</td>
+      </tr>
       </tbody>
     </table>
 
-    <!-- Пагінація -->
     <div class="pagination" v-show="totalPages > 1">
       <button type="button" @click="prevPage" :disabled="page === 1">«</button>
       <span>Сторінка {{ page }} з {{ totalPages }}</span>
-      <button type="button" @click="nextPage" :disabled="page === totalPages">
-        »
-      </button>
+      <button type="button" @click="nextPage" :disabled="page === totalPages">»</button>
     </div>
   </section>
 </template>
@@ -161,9 +134,8 @@
 <script setup>
 import { ref, reactive, computed, watch, onMounted } from "vue";
 
-/** СТАН  */
 const STORAGE_KEY = "lab1-tasks";
-const tasks = ref([]); // [{id,title,description,status:'active'|'done',createdAt:'YYYY-MM-DD',priority}]
+const tasks = ref([]);
 
 const newTask = reactive({
   title: "",
@@ -181,11 +153,9 @@ const filters = reactive({
   dateTo: "",
 });
 
-/** Пагінація */
 const page = ref(1);
 const pageSize = ref(5);
 
-/** Редагування */
 const editId = ref(null);
 const editDraft = reactive({ title: "", description: "", priority: "medium" });
 
@@ -204,45 +174,30 @@ watch(tasks, (v) => localStorage.setItem(STORAGE_KEY, JSON.stringify(v)), {
 });
 
 watch(
-  () => ({ ...filters, pageSize: pageSize.value }),
-  () => {
-    page.value = 1;
-  },
-  { deep: true },
+    () => ({ ...filters, pageSize: pageSize.value }),
+    () => {
+      page.value = 1;
+    },
+    { deep: true },
 );
 
-/** ОБЧИСЛЮВАНІ */
 const total = computed(() => tasks.value.length);
-const activeCount = computed(
-  () => tasks.value.filter((t) => t.status === "active").length,
-);
-const completedCount = computed(
-  () => tasks.value.filter((t) => t.status === "done").length,
-);
+const activeCount = computed(() => tasks.value.filter((t) => t.status === "active").length);
+const completedCount = computed(() => tasks.value.filter((t) => t.status === "done").length);
 
 const filteredTasks = computed(() => {
   return tasks.value
-    .filter((t) =>
-      filters.title
-        ? t.title.toLowerCase().includes(filters.title.toLowerCase())
-        : true,
-    )
-    .filter((t) =>
-      filters.description
-        ? t.description
-            ?.toLowerCase()
-            .includes(filters.description.toLowerCase())
-        : true,
-    )
-    .filter((t) => (filters.status ? t.status === filters.status : true))
-    .filter((t) => (filters.priority ? t.priority === filters.priority : true))
-    .filter((t) => (filters.dateFrom ? t.createdAt >= filters.dateFrom : true))
-    .filter((t) => (filters.dateTo ? t.createdAt <= filters.dateTo : true));
+      .filter((t) => (filters.title ? t.title.toLowerCase().includes(filters.title.toLowerCase()) : true))
+      .filter((t) =>
+          filters.description ? t.description?.toLowerCase().includes(filters.description.toLowerCase()) : true,
+      )
+      .filter((t) => (filters.status ? t.status === filters.status : true))
+      .filter((t) => (filters.priority ? t.priority === filters.priority : true))
+      .filter((t) => (filters.dateFrom ? t.createdAt >= filters.dateFrom : true))
+      .filter((t) => (filters.dateTo ? t.createdAt <= filters.dateTo : true));
 });
 
-const totalPages = computed(() =>
-  Math.max(1, Math.ceil(filteredTasks.value.length / pageSize.value)),
-);
+const totalPages = computed(() => Math.max(1, Math.ceil(filteredTasks.value.length / pageSize.value)));
 
 const paginatedTasks = computed(() => {
   if (page.value > totalPages.value) page.value = 1;
@@ -250,7 +205,6 @@ const paginatedTasks = computed(() => {
   return filteredTasks.value.slice(start, start + pageSize.value);
 });
 
-/**  МЕТОДИ  */
 function addTask() {
   if (!newTask.title.trim()) return;
   tasks.value.unshift({

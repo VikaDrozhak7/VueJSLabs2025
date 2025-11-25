@@ -1,193 +1,273 @@
-# Лабораторна робота №1
-## Тема: Знайомство з Vue.js 3 (Composition API)
+# Лабораторна робота №7
 
 ---
 
-##  запуск проєкту
+#  Встановлення та запуск
 
-1. Клонування та перехід у проєкт
-   ```bash
-   git clone https://github.com/YourUsername/VueJSLabs2025.git
-   cd VueJSLabs2025/lab1
-   ```
+##  Встановлення залежностей
 
-2. Встановлення залежностей
-   ```bash
-   npm install
-   ```
-
-3. Запуск дев-сервера
-   ```bash
-   npm run dev
-   ```
-   Проєкт відкриється за адресою http://localhost:5173
-
----
-
-## Скріншоти та пояснення
-
-### 1. Початковий вигляд застосунку
-![Початковий екран](screenshots/Screenshot%20at%20Oct%2004%2017-21-39.png)
-
-Інтерфейс після запуску:
-- форма додавання задачі з обов’язковими полями;
-- фільтри ще не активні;
-- таблиця порожня;
-- лічильники `Усього: 0`, `Активні: 0`, `Виконані: 0`.
-
----
-
-### 2. Додано кілька задач
-![Список задач](screenshots/Screenshot%20at%20Oct%2004%2017-26-02.png)
-
-На цьому екрані вже створено задачі:
-- відображається таблиця з назвами, описом, пріоритетом, датою;
-- кнопки **Редагувати** і **Видалити** активні;
-- лічильники показують актуальні дані (`Усього: 4`, `Активні: 4`, `Виконані: 0`).
-
----
-
-### 3. Робота фільтра за назвою
-![Фільтр за назвою](screenshots/Screenshot%20at%20Oct%2004%2017-26-56.png)
-
-У полі **Title contains...** введено «ма»:
-- `filteredTasks` (computed) одразу перераховує список;
-- відображено лише задачу “Магазин купити”;
-
-
----
-
-### 4. Робота фільтра за описом
-![Фільтр за описом](screenshots/Screenshot%20at%20Oct%2004%2017-27-12.png)
-
-Демонструє пошук за вмістом поля **Опис**:
-- фільтр `filters.description` реактивно оновлює computed `filteredTasks`;
-- залишилася лише одна задача, що містить введений текст.
-
----
-
-### 5. Повний список задач з різними пріоритетами
-![Усі задачі](screenshots/Screenshot%20at%20Oct%2004%2017-26-02.png)
-
-Тут видно три задачі з різним пріоритетом:
-- **Low**, **Medium**, **High** — відображені кольоровими тегами;
-- усі активні;
-- реалізовано сортування та відображення за computed `paginatedTasks`.
-
----
-
-### 6. Vue DevTools – структура компонентів
-![Vue DevTools структура](screenshots/Screenshot%20at%20Oct%2004%2017-29-40.png)
-
-У Vue DevTools видно:
-- компонент `<App>` і вкладений `<TodoList>`;
-- реактивні змінні (`tasks`, `filters`, `page`, `pageSize`, `editId`, `editDraft`);
-- computed-властивості (`total`, `activeCount`, `completedCount`, `filteredTasks`, `paginatedTasks`);
-- методи (`addTask`, `removeTask`, `toggleStatus`, `startEdit`, `saveEdit`, `resetFilters` ).
-
-
-![Vue DevTools структура](screenshots/Screenshot%20at%20Oct%2004%2017-59-00.png)
-- масив tasks, який містить 4 задачі;
-- кожен елемент є Reactive Object, що доводить — Vue відстежує зміни на рівні полів;
-- computed filteredTasks та paginatedTasks автоматично оновлюються;
-- статус і пріоритет (status: done, priority: low) змінюються миттєво при взаємодії з чекбоксами у застосунку;
-
-![Vue DevTools структура](screenshots/Screenshot%20at%20Oct%2004%2018-00-07.png)
-
-На цьому скріншоті видно:
-- ключ STORAGE_KEY: lab1-tasks — саме під цим ім’ям дані зберігаються у LocalStorage;
-- список tasks складається з 4 об’єктів, кожен містить поля:`title`, `description`, `status`, `priority`, `createdAt`, `id`;
-- Vue DevTools відображає, що tasks  це Ref(Array), а значить watch стежить за всіма змінами у масиві;
-- кожна зміна (наприклад, редагування або оновлення статусу) викликає спрацювання watch, який одразу оновлює запис у LocalStorage.
----
-
-### 7. Виконані задачі (зміна статусу)
-![Виконані задачі](screenshots/Screenshot%20at%20Oct%2004%2017-28-43.png)
-
-На екрані:
-- дві задачі відмічені як виконані (чекбокси);
-- статуси оновлюються реактивно, рядки перекреслені (`.done`);
-- computed `activeCount` і `completedCount` оновлені автоматично.
-
----
-
-### 8. Фільтр за статусом “Виконані”
-![Фільтр виконаних](screenshots/Screenshot%20at%20Oct%2004%2017-28-24.png)
-
-Тут користувач вибрав у фільтрі статус **“Виконані”**:
-- computed `filteredTasks` показує лише завершені задачі;
-- у таблиці відображається одна виконана задача;
-- лічильники `Активні: 3`, `Виконані: 1`.
-
----
-
-
-
-##  застосовані ref / reactive
-
-```js
-const tasks = ref([])
-const newTask = reactive({
-  title: '',
-  description: '',
-  priority: 'medium',
-  createdAt: new Date().toISOString().slice(0, 10),
-})
-const filters = reactive({
-  title: '',
-  description: '',
-  status: '',
-  priority: '',
-  dateFrom: '',
-  dateTo: '',
-})
-const page = ref(1)
-const pageSize = ref(5)
-const editId = ref(null)
-const editDraft = reactive({ title: '', description: '' })
+```bash
+npm install
 ```
 
-`ref` використано для простих значень і масивів, `reactive` — для групових об’єктів стану.
+##  Запуск dev-сервера
 
----
-
-##  застосовані computed
-
-```js
-const total = computed(() => tasks.value.length)
-const activeCount = computed(() => tasks.value.filter(t => t.status === 'active').length)
-const completedCount = computed(() => tasks.value.filter(t => t.status === 'done').length)
+```bash
+npm run dev
 ```
 
-Використано для підрахунку кількості задач, активних і виконаних.
+Додаток доступний за адресою:
 
----
-
-## застосовано watch
-
-```js
-onMounted(() => {
-  const raw = localStorage.getItem('lab1-tasks')
-  tasks.value = raw ? JSON.parse(raw) : []
-})
-
-watch(tasks, (v) => localStorage.setItem('lab1-tasks', JSON.stringify(v)), {
-  deep: true,
-})
+```
+http://localhost:5173/
 ```
 
-Список зберігається у **LocalStorage** під ключем `lab1-tasks`  
-і автоматично оновлюється через `watch`.
+---
+
+#  Запуск тестів
+
+Усі тести поділені на:
+
+- **Unit тести**
+- **Component тести**
+- **E2E тести**
 
 ---
 
-## Використані директиви
+##  Unit / Component тести (Vitest)
 
-- `v-model` — двостороння прив’язка у формах і фільтрах
-- `v-on` або `@` — обробка подій (`click`, `submit`, `change`)
-- `v-bind` або `:` — прив’язка динамічних атрибутів (`:class`, `:key`)
-- `v-for` — відображення списку задач
-- `v-if / v-else` — перемикання режиму редагування
-- `v-show` — показ/приховування пагінації
+Запуск unit/component тестів:
+
+```bash
+npm run test:unit
+```
+![результат](screenshots/Screenshot%20at%20Oct%2004%2016-34-23.png)
+
+Графічний режим Vitest UI:
+
+```bash
+npm run test:unit:ui
+```
+![результат](screenshots/Screenshot%20at%20Nov%2024%2020-43-08.png)
+---
+
+##  Coverage 
+
+Команда:
+
+```bash
+npm run test:unit:cov
+```
+
+![результат](screenshots/Screenshot%20at%20Nov%2024%2020-43-55.png)
+HTML-звіт знаходиться в:
+
+```
+coverage/index.html
+```
+
+Відкрити:
+
+```bash
+open coverage/index.html
+```
+![результат](screenshots/Screenshot%20at%20Nov%2024%2020-44-44.png)
 
 
+##  E2E-тести Playwright
+
+Запуск headless:
+
+```bash
+npm run test:e2e
+```
+![результат](screenshots/Screenshot%20at%20Nov%2024%2020-45-55.png)
+Запуск у видимому браузері:
+
+```bash
+npm run test:e2e:headed
+```
+![результат](screenshots/Screenshot%20at%20Oct%2004%2016-34-23.png)
+Режим UI Mode:
+
+```bash
+npm run test:e2e:ui
+```
+![результат](screenshots/Screenshot%20at%20Nov%2024%2020-51-40.png)
+---
+
+
+# Unit Tests
+
+Файл: `tests/unit/todoUtils.test.js`
+
+Протестовані функції:
+
+###  `getActiveCount(list)`
+Рахує кількість активних задач.
+
+```js
+const list = [
+  { title: "A", done: false },
+  { title: "B", done: true }
+];
+expect(getActiveCount(list)).toBe(1);
+```
+
+###  `filterTodos(list, status)`
+Перевірка фільтрації списку задач за статусом.
+
+```js
+expect(filterTodos(list, "active")).toEqual([{ title: "A", done: false }]);
+```
+
+---
+
+#   Component Tests (TodoList.vue)
+
+Файл: `tests/components/TodoList.test.js`
+
+###  Рендеринг компоненту
+
+```js
+const wrapper = mount(TodoList);
+expect(wrapper.exists()).toBe(true);
+```
+
+---
+
+###  Додавання задачі
+
+```js
+await wrapper.find("input").setValue("New Task");
+await wrapper.find("button").trigger("click");
+expect(wrapper.text()).toContain("New Task");
+```
+
+---
+
+### Видалення задачі
+
+```js
+await wrapper.find("button.danger").trigger("click");
+expect(wrapper.text()).not.toContain("New Task");
+```
+
+---
+
+#   Coverage: що покрито / що не покрито
+
+##  Покриті файли:
+
+| Файл | Покриття | Протестовано |
+|------|----------|--------------|
+| **TodoList.vue** | ~60%     | рендер, додавання, видалення |
+| **todoUtils.js** | ~55%     | getActiveCount, filterTodos |
+
+---
+
+##  Не покриті частини:
+
+| Функція | Причина |
+|--------|---------|
+| `startEdit()` | Не протестовано редагування |
+| `saveEdit()` | Не протестовано |
+| `cancelEdit()` | Теж не охоплено |
+| `formatDate()` | Не тестувався |
+| Пагінація | Жодного тесту |
+| Комбіновані фільтри | Протестовано тільки статус |
+
+---
+
+#  E2E-тести Playwright
+
+Файл: `e2e/todo.spec.js`
+
+Реалізовано 5 основних E2E-сценаріїв:
+
+---
+
+##   Завантаження сторінки + screenshot
+
+```js
+await page.screenshot({
+  path: "screenshots/todo-home.png",
+  fullPage: true
+});
+```
+
+---
+
+##   Додавання задачі
+
+```js
+await page.getByPlaceholder("Назва *").fill("E2E Task");
+await page.getByRole("button", { name: "Додати" }).click();
+await expect(page.getByText("E2E Task")).toBeVisible();
+```
+
+---
+
+##  Перемикання статусу задачі
+
+```js
+const checkbox = row.locator("input[type=checkbox]");
+await checkbox.check();
+await expect(checkbox).toBeChecked();
+```
+
+---
+
+##   Фільтрація задач
+
+```js
+await page.getByLabel("Статус").selectOption("done");
+await expect(page.getByText("Task B")).not.toBeVisible();
+```
+
+---
+
+##   Видалення задачі
+
+```js
+await deleteBtn.click();
+await expect(page.getByText("Delete Me")).not.toBeVisible();
+```
+
+---
+
+# . Playwright Codegen
+
+Один тест записано автоматично через codegen.
+
+Запуск:
+
+```bash
+npx playwright codegen http://localhost:5173
+```
+
+Отриманий код збережено у:
+
+```
+e2e/codegen.spec.js
+```
+
+---
+
+#  Playwright UI Mode
+
+Запуск:
+
+```bash
+npm run test:e2e:ui
+```
+
+UI Mode дозволяє переглядати:
+
+- виконання тестів у реальному часі,
+- DOM-стан,
+- screenshots,
+- таймлайн,
+- assertion details.
+
+---
